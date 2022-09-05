@@ -1,6 +1,6 @@
 # Texo Award API
 
-Python FastAPI and Sqlalchemy ORM over Postgres database
+Python FastAPI over SQLite database
 
 
 ## Technologies
