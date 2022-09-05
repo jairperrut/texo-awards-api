@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  api:
+    build: .
+    image: jairperrut/texo-awards-api
+    container_name: texo-awards-api    
+    ports:
+      - 8000:8000
+    command: bash -c "alembic upgrade head && python -m awards_api"
