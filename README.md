@@ -26,9 +26,8 @@ Python FastAPI and Sqlalchemy ORM over Postgres database
    make run-server
    ```
 4. In your browser call:
-  [API Winners](http://localhost:8000/api/awards/winners/)
-  [Swagger](http://localhost:8000/docs)
-
+  - [API Winners](http://localhost:8000/api/awards/winners/)
+  - [Swagger Docs](http://localhost:8000/docs)
 
 #### Testing
 
