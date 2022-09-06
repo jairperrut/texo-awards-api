@@ -23,7 +23,7 @@ class AwardService(CRUDService):
         service_movie = CRUDService(self.repository.session, Movie)
 
         with open(file_path) as file:
-            print("Loading movies CSV...")
+            logger.info("Loading movies from CSV...")
             data = csv.DictReader(file, delimiter=';')
             for row in data:
                 award = self.repository.find({'year': row['year']}).join(Movie).filter(Movie.title == row['title']).first()
@@ -32,8 +32,9 @@ class AwardService(CRUDService):
                     studio = service_studio.get_or_create({"name": row['studios']})
                     movie = service_movie.get_or_create({'title': row['title'], 'producer_id': producer.id, 'studio_id': studio.id})
                     winner = row['winner'] == 'yes'
-                    print(f'Adding award: {row["year"]} | {row["title"]}')
+                    logger.debug(f'Adding award: {row["year"]} | {row["title"]}')
                     self.create({'year': row['year'], 'movie_id': movie.id, 'winner': winner})
+            logger.info("Finished loading movies")
 
     def winners_interval(self):
         window_func = func.lag(Award.year).over(partition_by=Producer.id, order_by=Award.year)
