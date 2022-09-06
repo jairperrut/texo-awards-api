@@ -37,41 +37,42 @@ def test_winner_route(client_app):
 
 def test_winner_route_a(client_app, producer_factory, award_factory):
     producer_1 = producer_factory()
-    award_factory(movie__producer=producer_1, year=1980, winner=True)
-    award_factory(movie__producer=producer_1, year=1982, winner=True)
-    award_factory(movie__producer=producer_1, year=1983, winner=True)
-    award_factory(movie__producer=producer_1, year=1985, winner=True)
-    award_factory(movie__producer=producer_1, year=1988, winner=True)
-
     producer_2 = producer_factory()
-    award_factory(movie__producer=producer_2, year=1978, winner=True)
-    award_factory(movie__producer=producer_2, year=1979, winner=True)
-    award_factory(movie__producer=producer_2, year=1984, winner=True)
-    award_factory(movie__producer=producer_2, year=1990, winner=True)
+
+    award_factory(movie__producers=[producer_1], year=1980, winner=True)
+    award_factory(movie__producers=[producer_1], year=1982, winner=True)
+    award_factory(movie__producers=[producer_1, producer_2], year=1983, winner=True)
+    award_factory(movie__producers=[producer_1], year=1985, winner=True)
+    award_factory(movie__producers=[producer_1], year=1988, winner=True)
+
+    award_factory(movie__producers=[producer_2], year=1978, winner=True)
+    award_factory(movie__producers=[producer_factory()], year=1979, winner=True)
+    award_factory(movie__producers=[producer_2, producer_factory()], year=1984, winner=True)
+    award_factory(movie__producers=[producer_2, producer_1], year=1990, winner=True)
 
     response = client_app.get("/api/awards/winners/")
     assert response.status_code == 200
     assert response.json() == {
         "min": [
             {
-                "producer": "Producer 0",
+                "producer": "Producer 1",
                 "interval": 1,
                 "previousWin": 1982,
                 "followingWin": 1983
             },
             {
-                "producer": "Producer 1",
+                "producer": "Producer 2",
                 "interval": 1,
-                "previousWin": 1978,
-                "followingWin": 1979
+                "previousWin": 1983,
+                "followingWin": 1984
             }
             ],
         "max": [
             {
-                "producer": "Producer 1",
+                "producer": "Producer 2",
                 "interval": 6,
                 "previousWin": 1984,
                 "followingWin": 1990
             }
-            ]
-        }
+        ]
+    }

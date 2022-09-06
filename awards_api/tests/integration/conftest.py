@@ -15,8 +15,8 @@ def studio_factory(db_session):
             model = Studio
             sqlalchemy_session = db_session
 
-        id = factory.Sequence(lambda n: n)
-        name = factory.Sequence(lambda n: 'Studio %d' % n)
+        id = factory.Sequence(lambda n: n + 1)
+        name = factory.Sequence(lambda n: f'Studio {n+1}')
 
     return StudioFactory
 
@@ -28,8 +28,8 @@ def producer_factory(db_session):
             model = Producer
             sqlalchemy_session = db_session
 
-        id = factory.Sequence(lambda n: n)
-        name = factory.Sequence(lambda n: 'Producer %d' % n)
+        id = factory.Sequence(lambda n: n + 1)
+        name = factory.Sequence(lambda n: f'Producer {n+1}')
 
     return ProducerFactory
 
@@ -41,10 +41,26 @@ def movie_factory(db_session, producer_factory, studio_factory):
             model = Movie
             sqlalchemy_session = db_session
 
-        id = factory.Sequence(lambda n: n)
-        title = factory.Sequence(lambda n: 'Movie %d' % n)
-        studio = factory.SubFactory(studio_factory)
-        producer = factory.SubFactory(producer_factory)
+        id = factory.Sequence(lambda n: n + 1)
+        title = factory.Sequence(lambda n: f'Movie {n+1}')
+
+    @factory.post_generation
+    def studios(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for studio in extracted:
+                self.studios.add(studio)
+
+    @factory.post_generation
+    def producers(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for producer in extracted:
+                self.producers.add(producer)
 
     return MovieFactory
 
@@ -56,7 +72,7 @@ def award_factory(db_session, movie_factory):
             model = Award
             sqlalchemy_session = db_session
 
-        id = factory.Sequence(lambda n: n)
+        id = factory.Sequence(lambda n: n + 1)
         year = FuzzyInteger(1980, 2010)
         movie = factory.SubFactory(movie_factory)
         winner = False

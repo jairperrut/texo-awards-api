@@ -13,5 +13,5 @@ class MovieBase(BaseModel):
 
 class MovieDumpSchema(MovieBase):
     id: int
-    studio: StudioDumpSchema
-    producer: ProducerDumpSchema
+    studios: list[StudioDumpSchema]
+    producers: list[ProducerDumpSchema]

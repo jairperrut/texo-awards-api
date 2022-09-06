@@ -1,4 +1,3 @@
-from cmath import log
 from logging.config import dictConfig
 from fastapi import FastAPI
 
@@ -16,7 +15,6 @@ def get_app(init_db=True) -> FastAPI:
         description="FastAPI service for Texo Awards",
         version="0.0.1"
     )
-    
 
     app.include_router(router=api_routers)
     if init_db:
